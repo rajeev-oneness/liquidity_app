@@ -1,0 +1,7 @@
+{
+  "name": "Liquidity",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
