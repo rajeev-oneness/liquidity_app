@@ -24,23 +24,58 @@ export class CartInfoPage implements OnInit {
     this.existingCartCheck(); // checking the Existing cart
   }
 
+  decreamentProductCounter(productInfo,categoryType){ // decareament the product
+    let value = this.cartItem.cart.find(item => item.itemId === productInfo.itemId);
+    if(value == undefined){}
+    else{
+      let currentQuantity = (parseInt(String(value.quantity)) - 1).toString();
+      // console.log('currentQuantity => '+currentQuantity);
+      if(currentQuantity > '0'){
+        value.quantity = (parseInt(String(value.quantity)) - 1).toString();
+        value.calculatedPrice = String(parseFloat(value.currentPrice) * parseInt(value.quantity));
+      }else if(currentQuantity <= '0'){
+        value.quantity = '0';value.calculatedPrice = '0';
+        this.cartItem.cart = this.cartItem.cart.filter(item => item.itemId !== productInfo.itemId); // removing the item from cart
+        // console.log('Now Cart',this.cartItem.cart);
+      }
+    }
+    this.updateCartItemToLocalStorage(); // updating the Cart in to LocalStorage
+  }
+
+  increamentProductCounter(productInfo,categoryType){ // increament the Product
+    let value = this.cartItem.cart.find(item => item.itemId === productInfo.itemId);
+    if(value != undefined){
+      value.quantity = (parseInt(String(value.quantity)) + 1).toString();
+      value.calculatedPrice = String(parseFloat(value.currentPrice) * parseInt(value.quantity)); 
+    }
+    this.updateCartItemToLocalStorage(); // updating the Cart in to LocalStorage
+    // console.log(this.cartItem.cart);
+  }
+
   existingCartCheck(){
     let existingCart = JSON.parse(localStorage.getItem('allCartItems'));
     if(existingCart != null){
       this.cartItem.cart = existingCart;
+      this.checkCurrentCartValue(); // Cheking the Current Cart Value
     }
     console.log('Existing Cart Info',this.cartItem.cart);
   }
 
   totalCartValue = '0'; // Total Cart Value
-  currentCartValue(){
+  checkCurrentCartValue(){
     this.totalCartValue = this.cartItem.cart.reduce((accumulator:any, current:any) => parseFloat(accumulator) + parseFloat(current.calculatedPrice), 0);
-    return this.totalCartValue;
   }
 
-  removeProductItem(index,product){
-    
+  removeProductItem(index){
+    this.cartItem.cart.splice(index, 1);
+    this.updateCartItemToLocalStorage();
   }
+
+  updateCartItemToLocalStorage(){ // updating the Cart in to LocalStorage
+    localStorage.setItem('allCartItems',JSON.stringify(this.cartItem.cart));
+    this.checkCurrentCartValue(); // Checking the Cart value
+  }
+
 }
 
 interface CARTSITEM {
