@@ -106,8 +106,6 @@ export class OutlethomePage implements OnInit {
     }
   }
 
-  final_cart_value = '1024';
-
   increamentProductCounter(productInfo,categoryType){ // increament the Product
     let value = this.cartItem.cart.find(item => item.itemId === productInfo.id);
     if(value == undefined){
@@ -131,14 +129,17 @@ export class OutlethomePage implements OnInit {
       value.quantity = (parseInt(String(value.quantity)) + 1).toString();
       value.calculatedPrice = String(parseFloat(value.currentPrice) * parseInt(value.quantity));
     }
+    console.log(this.cartItem.cart);
   }
 
+  totalCartValue = '0'; // Total Cart Value
   checkCurrentQuantityCount(productInfo){
     let value = this.cartItem.cart.find(item => item.itemId === productInfo.id);
+    this.totalCartValue = this.cartItem.cart.reduce((accumulator:any, current:any) => parseFloat(accumulator) + parseFloat(current.calculatedPrice), 0);
     if(value == undefined){ // if product not found in the cart then quantity set to be zero
       return '0';
     }
-    return value.quantity; // else return the quantity
+    return value.quantity; // else return the Saved quantity
   }
 }
 

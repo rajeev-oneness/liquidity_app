@@ -165,7 +165,7 @@
         <img src="assets/images/cart.png">
         <div class="item_total">
           <p><small>{{cartItem.cart.length}} ITEM IN CART</small></p>
-          <p class="price_end">₹ {{final_cart_value | number : '.2-2'}}</p>
+          <p class="price_end">₹ {{totalCartValue | number : '.2-2'}}</p>
           <p><small>plus taxes*</small></p>
         </div>
       </div>
@@ -175,56 +175,5 @@
       </div>
     </div>
   </ion-footer>
-
-  <!-- <ion-footer class="ion-no-border" *ngSwitchCase="'food'">
-    <div class="footer_content">
-      <div class="footer_item_start">
-        <img src="assets/cart.png">
-        <div class="item_total">
-          <p><small>{{addToCart.carts.length}} ITEM IN CART</small></p>
-          <p class="price_end">₹ {{final_cart_value | number : '.2-2'}}</p>
-          <p><small>plus taxes*</small></p>
-        </div>
-      </div>
-      <div class="footer_item_end mw_230" (click)="gotoCart()">
-        <p>View Cart</p>
-        <img src="assets/arrow-right.png">
-      </div>
-    </div>
-  </ion-footer>
-
-  <ion-footer class="ion-no-border" *ngSwitchCase="'soft-beverage'">
-    <div class="footer_content">
-      <div class="footer_item_start">
-        <img src="assets/cart.png">
-        <div class="item_total">
-          <p><small>{{addToCart.carts.length}} ITEM IN CART</small></p>
-          <p class="price_end">₹ {{final_cart_value | number : '.2-2'}}</p>
-          <p><small>plus taxes*</small></p>
-        </div>
-      </div>
-      <div class="footer_item_end mw_230" (click)="gotoCart()">
-        <p>View Cart</p>
-        <img src="assets/arrow-right.png">
-      </div>
-    </div>
-  </ion-footer>
-
-  <ion-footer class="ion-no-border" *ngSwitchCase="'combo'">
-    <div class="footer_content">
-      <div class="footer_item_start">
-        <img src="assets/cart.png">
-        <div class="item_total">
-          <p><small>{{addToCart.carts.length}} ITEM IN CART</small></p>
-          <p class="price_end">₹ {{final_cart_value | number : '.2-2'}}</p>
-          <p><small>plus taxes*</small></p>
-        </div>
-      </div>
-      <div class="footer_item_end mw_230" (click)="gotoCart()">
-        <p>View Cart</p>
-        <img src="assets/arrow-right.png">
-      </div>
-    </div>
-  </ion-footer> -->
 </div>
 
