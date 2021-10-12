@@ -13,6 +13,7 @@ export class OutlethomePage implements OnInit {
   
   public cartItem: {cart: CARTSITEM[];};
   public currentSuperCategory = 'liquor';
+  public currentLiquorInfo : any = '';
 
   constructor(private _apiService : ApiServiceService) {
     this.cartItem = {cart : []};
@@ -41,25 +42,26 @@ export class OutlethomePage implements OnInit {
       res => {
         if(res.status == 1 || res.status == '1'){
           this.liquorSubCategoryInfo = res.sub_categories;
-          // this.getLiquorProductInfo('2'); // getting the Product Info for First SeubCategory
+          this.getLiquorProductInfo(this.liquorSubCategoryInfo[0]); // Getting the First Liquor prduct Info
         }
-        console.log(res);
+        // console.log('getLiquorSubCategoryInfo',res);
       },err => {
-        console.log(err);
+        // console.log('getLiquorSubCategoryInfo',err);
       }
     )
   }
   
   public liquorProductInfo : any = [];
   getLiquorProductInfo(liquorSubCategory){
+    this.currentLiquorInfo = liquorSubCategory.name;
     this._apiService.getLiquorProductInfo(liquorSubCategory.id,this.shopDetails.id).subscribe(
       res => {
         if(res.status == 1 || res.status == '1'){
           this.liquorProductInfo = res.products;
         }
-        console.log(res);
+        // console.log('getLiquorProductInfo',res);
       },err => {
-        console.log(err);
+        // console.log('getLiquorProductInfo',err);
       }
     )
   }
@@ -80,30 +82,69 @@ export class OutlethomePage implements OnInit {
             this.comboProductInfo = res.products;
           }
         }
-        console.log(res,categoryType);
+        // console.log('getOtherAllProductInfo',res,categoryType);
       },err => {
-        console.log(err);
+        // console.log('getOtherAllProductInfo',err);
       }
     )
   }
 
-
-
-  increamentProductCounter(productInfo,categoryType){
-    console.log(productInfo,categoryType);
+  decreamentProductCounter(productInfo,categoryType){ // decareament the product
+    let value = this.cartItem.cart.find(item => item.itemId === productInfo.id);
+    if(value == undefined){}
+    else{
+      let currentQuantity = (parseInt(String(value.quantity)) - 1).toString();
+      console.log('currentQuantity => '+currentQuantity);
+      if(currentQuantity > '0'){
+        value.quantity = (parseInt(String(value.quantity)) - 1).toString();
+        value.calculatedPrice = String(parseFloat(value.currentPrice) * parseInt(value.quantity));
+      }else if(currentQuantity <= '0'){
+        value.quantity = '0';value.calculatedPrice = '0';
+        this.cartItem.cart = this.cartItem.cart.filter(item => item.itemId !== productInfo.id); // removing the item from cart
+        console.log('Now Cart',this.cartItem.cart);
+      }
+    }
   }
 
-  decreamentProductCounter(productInfo,categoryType){
-    console.log(productInfo,categoryType);
+  final_cart_value = '1024';
+
+  increamentProductCounter(productInfo,categoryType){ // increament the Product
+    let value = this.cartItem.cart.find(item => item.itemId === productInfo.id);
+    if(value == undefined){
+      this.cartItem.cart.push({
+        categoryType : categoryType,
+        categoryId : productInfo.category_id,
+        subCategoryId : productInfo.sub_category_id,
+        outletId : this.shopDetails.id,
+        outletName : this.shopDetails.name,
+        outletImage : this.shopDetails.image,
+        itemId : productInfo.id,
+        itemName : productInfo.name,
+        highPrice : productInfo.highest_price,
+        lowPrice : productInfo.lowest_price,
+        currentPrice : productInfo.current_price,
+        quantity : '1',
+        calculatedPrice : productInfo.current_price,
+        description : productInfo.description,
+      });
+    }else{
+      value.quantity = (parseInt(String(value.quantity)) + 1).toString();
+      value.calculatedPrice = String(parseFloat(value.currentPrice) * parseInt(value.quantity));
+    }
   }
 
-  public addToCart: {
-    cart: CARTSITEM[];
-  };
+  checkCurrentQuantityCount(productInfo){
+    let value = this.cartItem.cart.find(item => item.itemId === productInfo.id);
+    if(value == undefined){ // if product not found in the cart then quantity set to be zero
+      return '0';
+    }
+    return value.quantity; // else return the quantity
+  }
 }
 
 interface CARTSITEM {
   categoryType : string, // liquor, food, combo, soft-beverage
+  categoryId : string,
   subCategoryId : string,
   outletId : string,
   outletName : string,
@@ -113,7 +154,7 @@ interface CARTSITEM {
   highPrice : string,
   lowPrice : string,
   currentPrice : string,
-  quantity : number,
-  calculatedPrice : string,
+  quantity : string,
+  calculatedPrice : any,
   description : string,
 }

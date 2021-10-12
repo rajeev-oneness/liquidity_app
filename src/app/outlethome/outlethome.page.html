@@ -11,7 +11,7 @@
 
 <ion-content>
   <div>
-    <ion-segment scrollable="true">
+    <ion-segment scrollable="true" [(ngModel)]="currentSuperCategory">
       <ion-segment-button value="liquor" (click)="changeSuperCategory('liquor')">LIQUOR</ion-segment-button>
       <ion-segment-button value="food" (click)="changeSuperCategory('food')">FOOD</ion-segment-button>
       <ion-segment-button value="soft-beverage" (click)="changeSuperCategory('soft-beverage')">SOFT BEVERAGE</ion-segment-button>
@@ -22,10 +22,10 @@
   <div>
     <ion-list *ngIf="currentSuperCategory == 'liquor'" class="segment_2">
       <div padding>
-        <ion-segment>
+        <ion-segment [(ngModel)]="currentLiquorInfo">
           <ion-segment-button  *ngFor="let liquorSubCategory of liquorSubCategoryInfo" value="{{liquorSubCategory.name}}" (click)="getLiquorProductInfo(liquorSubCategory)">
           <img src="{{liquorSubCategory.image}}">
-          <ion-button class="" shape="round">{{liquorSubCategory.name}}</ion-button>
+          <ion-button shape="round">{{liquorSubCategory.name}}</ion-button>
           </ion-segment-button>
         </ion-segment>
       </div>
@@ -47,12 +47,12 @@
               </ion-col>
               <ion-col size="3">
               <div class="quantity">
-                <div (click)="increamentProductCounter(product,'liquor')">
+                <div (click)="decreamentProductCounter(product,'liquor')">
                   <span class="plus">+</span>
                 </div>
-                <p>0</p>
-                <div (click)="decreamentProductCounter(product,'liquor')">
-                  <span class="minus" >-</span>
+                <p>{{checkCurrentQuantityCount(product,'liquor')}}</p>
+                <div (click)="increamentProductCounter(product,'liquor')">
+                  <span class="minus">-</span>
                 </div>
               </div>
               </ion-col>
@@ -79,12 +79,12 @@
                 </ion-col>
                 <ion-col size="3">
                   <div class="quantity">
-                    <div (click)="increamentProductCounter(foodProduct,'food')">
+                    <div (click)="decreamentProductCounter(foodProduct,'food')">
                       <span class="plus" >+</span>
                     </div>
-                    <p>0</p>
-                    <div (click)="decreamentProductCounter(foodProduct,'food')">
-                      <span class="minus" >-</span>
+                    <p>{{checkCurrentQuantityCount(foodProduct,'food')}}</p>
+                    <div (click)="increamentProductCounter(foodProduct,'food')">
+                      <span class="minus">-</span>
                     </div>
                   </div>
                   </ion-col>
@@ -110,11 +110,11 @@
                 </ion-col>
                 <ion-col size="3">
                   <div class="quantity">
-                    <div (click)="increamentProductCounter(softBeverage,'soft-beverage')">
+                    <div (click)="decreamentProductCounter(softBeverage,'soft-beverage')">
                       <span class="plus">+</span>
                     </div>
-                    <p>0</p>
-                    <div (click)="decreamentProductCounter(softBeverage,'soft-beverage')">
+                    <p>{{checkCurrentQuantityCount(softBeverage,'soft-beverage')}}</p>
+                    <div (click)="increamentProductCounter(softBeverage,'soft-beverage')">
                       <span class="minus">-</span>
                     </div>
                   </div>
@@ -141,11 +141,11 @@
                 </ion-col>
                 <ion-col size="3">
                   <div class="quantity">
-                    <div (click)="increamentProductCounter(comboProduct,'combo')">
+                    <div (click)="decreamentProductCounter(comboProduct,'combo')">
                       <span class="plus">+</span>
                     </div>
-                    <p>0</p>
-                    <div (click)="decreamentProductCounter(comboProduct,'combo')">
+                    <p>{{checkCurrentQuantityCount(comboProduct,'combo')}}</p>
+                    <div (click)="increamentProductCounter(comboProduct,'combo')">
                       <span class="minus">-</span>
                     </div>
                   </div>
@@ -158,25 +158,25 @@
   </div>
 </ion-content>
 
-<!-- <div>
-  <ion-footer class="ion-no-border" *ngSwitchCase="'liquor'">
+<div *ngIf="cartItem.cart.length > 0">
+  <ion-footer class="ion-no-border">
     <div class="footer_content">
       <div class="footer_item_start">
-        <img src="assets/cart.png">
+        <img src="assets/images/cart.png">
         <div class="item_total">
-          <p><small>{{addToCart.carts.length}} ITEM IN CART</small></p>
+          <p><small>{{cartItem.cart.length}} ITEM IN CART</small></p>
           <p class="price_end">₹ {{final_cart_value | number : '.2-2'}}</p>
           <p><small>plus taxes*</small></p>
         </div>
       </div>
-      <div class="footer_item_end mw_230" (click)="gotoCart()">
+      <div class="footer_item_end mw_230" (click)="switchToCartSection()">
         <p>View Cart</p>
-        <img src="assets/arrow-right.png">
+        <img src="assets/images/arrow-right.png">
       </div>
     </div>
   </ion-footer>
 
-  <ion-footer class="ion-no-border" *ngSwitchCase="'food'">
+  <!-- <ion-footer class="ion-no-border" *ngSwitchCase="'food'">
     <div class="footer_content">
       <div class="footer_item_start">
         <img src="assets/cart.png">
@@ -225,6 +225,6 @@
         <img src="assets/arrow-right.png">
       </div>
     </div>
-  </ion-footer>
-</div> -->
+  </ion-footer> -->
+</div>
 
