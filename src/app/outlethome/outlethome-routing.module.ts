@@ -7,6 +7,10 @@ const routes: Routes = [
   {
     path: '',
     component: OutlethomePage
+  },
+  {
+    path: 'cart-info',
+    loadChildren: () => import('./cart-info/cart-info.module').then( m => m.CartInfoPageModule)
   }
 ];
 

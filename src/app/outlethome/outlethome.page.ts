@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiServiceService } from '../service/api-service.service';
+import * as CryptoJS from 'crypto-js';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-outlethome',
@@ -15,11 +17,12 @@ export class OutlethomePage implements OnInit {
   public currentSuperCategory = 'liquor';
   public currentLiquorInfo : any = '';
 
-  constructor(private _apiService : ApiServiceService) {
+  constructor(private _apiService : ApiServiceService,private _router:Router) {
     this.cartItem = {cart : []};
   }
 
   ngOnInit() {
+    this.existingCartCheck(); // checking the Existing cart
     this.changeSuperCategory('liquor'); // clicking the Liquor Section by default
   }
 
@@ -94,16 +97,17 @@ export class OutlethomePage implements OnInit {
     if(value == undefined){}
     else{
       let currentQuantity = (parseInt(String(value.quantity)) - 1).toString();
-      console.log('currentQuantity => '+currentQuantity);
+      // console.log('currentQuantity => '+currentQuantity);
       if(currentQuantity > '0'){
         value.quantity = (parseInt(String(value.quantity)) - 1).toString();
         value.calculatedPrice = String(parseFloat(value.currentPrice) * parseInt(value.quantity));
       }else if(currentQuantity <= '0'){
         value.quantity = '0';value.calculatedPrice = '0';
         this.cartItem.cart = this.cartItem.cart.filter(item => item.itemId !== productInfo.id); // removing the item from cart
-        console.log('Now Cart',this.cartItem.cart);
+        // console.log('Now Cart',this.cartItem.cart);
       }
     }
+    this.updateCartItemToLocalStorage(); // updating the Cart in to LocalStorage
   }
 
   increamentProductCounter(productInfo,categoryType){ // increament the Product
@@ -129,7 +133,8 @@ export class OutlethomePage implements OnInit {
       value.quantity = (parseInt(String(value.quantity)) + 1).toString();
       value.calculatedPrice = String(parseFloat(value.currentPrice) * parseInt(value.quantity));
     }
-    console.log(this.cartItem.cart);
+    this.updateCartItemToLocalStorage(); // updating the Cart in to LocalStorage
+    // console.log(this.cartItem.cart);
   }
 
   totalCartValue = '0'; // Total Cart Value
@@ -140,6 +145,32 @@ export class OutlethomePage implements OnInit {
       return '0';
     }
     return value.quantity; // else return the Saved quantity
+  }
+
+  // Goto View cart Section
+  switchToViewCart(){
+    this.updateCartItemToLocalStorage();
+    localStorage.setItem('userDetails',JSON.stringify(this.userDetails));
+    localStorage.setItem('shopDetails',JSON.stringify(this.shopDetails));
+    this._router.navigate(['outlethome/cart-info']);
+    // Encrypting and Dcrypting the Cart Info
+    // var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(this.cartItem.cart), 'secret key 123').toString();
+    // console.log(ciphertext);
+    // var bytes  = CryptoJS.AES.decrypt(ciphertext, 'secret key 123');
+    // var decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    // console.log(decryptedData);
+  }
+
+  updateCartItemToLocalStorage(){ // updating the Cart in to LocalStorage
+    localStorage.setItem('allCartItems',JSON.stringify(this.cartItem.cart));
+  }
+
+  // Retriving the Existing Cart Which is Used Before
+  existingCartCheck(){
+    let existingCart = JSON.parse(localStorage.getItem('allCartItems'));
+    if(existingCart != null){
+      this.cartItem.cart = existingCart;
+    }
   }
 }
 

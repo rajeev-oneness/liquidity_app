@@ -45,16 +45,16 @@
                   </ul>
                 </div>
               </ion-col>
-              <ion-col size="3">
-              <div class="quantity">
-                <div (click)="decreamentProductCounter(product,'liquor')">
-                  <span class="plus">+</span>
+              <ion-col size="5">
+                <div class="quantity">
+                  <div (click)="decreamentProductCounter(product,'liquor')">
+                    <span class="plus">+</span>
+                  </div>
+                  <p>{{checkCurrentQuantityCount(product,'liquor')}}</p>
+                  <div (click)="increamentProductCounter(product,'liquor')">
+                    <span class="minus">-</span>
+                  </div>
                 </div>
-                <p>{{checkCurrentQuantityCount(product,'liquor')}}</p>
-                <div (click)="increamentProductCounter(product,'liquor')">
-                  <span class="minus">-</span>
-                </div>
-              </div>
               </ion-col>
             </ion-row>
           </ion-grid>
@@ -77,7 +77,7 @@
                     </ul>
                   </div>
                 </ion-col>
-                <ion-col size="3">
+                <ion-col size="5">
                   <div class="quantity">
                     <div (click)="decreamentProductCounter(foodProduct,'food')">
                       <span class="plus" >+</span>
@@ -87,7 +87,7 @@
                       <span class="minus">-</span>
                     </div>
                   </div>
-                  </ion-col>
+                </ion-col>
               </ion-row>
             </ion-grid>
           </ion-item>
@@ -108,7 +108,7 @@
                     </ul>
                   </div>
                 </ion-col>
-                <ion-col size="3">
+                <ion-col size="5">
                   <div class="quantity">
                     <div (click)="decreamentProductCounter(softBeverage,'soft-beverage')">
                       <span class="plus">+</span>
@@ -139,7 +139,7 @@
                     </ul>
                   </div>
                 </ion-col>
-                <ion-col size="3">
+                <ion-col size="5">
                   <div class="quantity">
                     <div (click)="decreamentProductCounter(comboProduct,'combo')">
                       <span class="plus">+</span>
@@ -169,7 +169,7 @@
           <p><small>plus taxes*</small></p>
         </div>
       </div>
-      <div class="footer_item_end mw_230" (click)="switchToCartSection()">
+      <div class="footer_item_end mw_230" (click)="switchToViewCart()">
         <p>View Cart</p>
         <img src="assets/images/arrow-right.png">
       </div>
