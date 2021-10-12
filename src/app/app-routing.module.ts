@@ -10,6 +10,10 @@ const routes: Routes = [
   {
     path: 'folder/:id',
     loadChildren: () => import('./folder/folder.module').then( m => m.FolderPageModule)
+  },
+  {
+    path: 'outlethome/:outletinfo',
+    loadChildren: () => import('./outlethome/outlethome.module').then( m => m.OutlethomePageModule)
   }
 ];
 
