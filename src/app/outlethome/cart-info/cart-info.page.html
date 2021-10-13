@@ -8,43 +8,44 @@
 </ion-header>
 
 <ion-content>
-  <div class="title_bar">
-    <h2 class="title">{{shopDetails.name}}</h2>
-  </div>
   <div class="drink_items">
-    <ion-list>
-      <ion-item *ngFor="let cartInfo of cartItem.cart;let i = index">
-        <ion-grid>
-          <ion-row class="ion-align-items-center">
-            <ion-col size="6">
-              <div class="drink_content">
-                <h3>{{cartInfo.itemName}}</h3>
-                <ul>
-                  <li>Price / unit: <span class="price_now d-block">₹ {{cartInfo.currentPrice | number : '.2-2'}}</span></li>
-                </ul>
-              </div>
-            </ion-col>
-            <ion-col size="3">
-              <div class="quantity">
-                <div (click)="decreamentProductCounter(cartInfo,cartInfo.categoryType)">
-                  <span class="plus">+</span>
+    <div *ngFor="let outletdata of uniqueOutletData">
+      <div class="title_bar">
+        <h2 class="title">{{outletdata.outletName}} <span class="rating_outlet_incart">{{outletdata.outletRating}}</span></h2>
+      </div>
+      <ion-list>
+        <ion-item *ngFor="let cartInfo of uniqueOutletItemFilter(outletdata);let i = index">
+          <ion-grid>
+            <ion-row class="ion-align-items-center">
+              <ion-col size="6">
+                <div class="drink_content">
+                  <h3>{{cartInfo.itemName}}</h3>
+                  <ul>
+                    <li>Price / unit: <span class="price_now d-block">₹ {{cartInfo.currentPrice | number : '.2-2'}}</span></li>
+                  </ul>
                 </div>
-                <p>{{cartInfo.quantity}}</p>
-                <div (click)="increamentProductCounter(cartInfo,cartInfo.categoryType)">
-                  <span class="minus">-</span>
+              </ion-col>
+              <ion-col size="3">
+                <div class="quantity">
+                  <div (click)="decreamentProductCounter(cartInfo,cartInfo.categoryType)">
+                    <span class="plus">+</span>
+                  </div>
+                  <p>{{cartInfo.quantity}}</p>
+                  <div (click)="increamentProductCounter(cartInfo,cartInfo.categoryType)">
+                    <span class="minus">-</span>
+                  </div>
                 </div>
-              </div>
-            </ion-col>
-            <ion-col size="3">
-              <div class="drink_content drink_content--mod">
-                <button (click)="removeProductItem(i,product)"><img src="assets/images/remove.png"></button>
-              </div>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </ion-item>
-    </ion-list>
-
+              </ion-col>
+              <ion-col size="3">
+                <div class="drink_content drink_content--mod">
+                  <button (click)="removeProductItem(i,product)"><img src="assets/images/remove.png"></button>
+                </div>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+      </ion-list>
+    </div>
     <ion-item>
       <ion-grid>
         <ion-row class="ion-align-items-center">

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiServiceService } from 'src/app/service/api-service.service';
 
@@ -22,6 +22,7 @@ export class CartInfoPage implements OnInit {
 
   ngOnInit() {
     this.existingCartCheck(); // checking the Existing cart
+    this.uniqueOutletDataFunction(); // Unique Outlet id Function
   }
 
   decreamentProductCounter(productInfo,categoryType){ // decareament the product
@@ -74,8 +75,23 @@ export class CartInfoPage implements OnInit {
   updateCartItemToLocalStorage(){ // updating the Cart in to LocalStorage
     localStorage.setItem('allCartItems',JSON.stringify(this.cartItem.cart));
     this.checkCurrentCartValue(); // Checking the Cart value
+    this.uniqueOutletDataFunction(); // updating filter
   }
 
+  public uniqueOutletData : any = [];
+  uniqueOutletDataFunction(){
+    // Unique Outlet Data
+    this.uniqueOutletData = this.cartItem.cart.filter((thing, i, arr) => {
+      return arr.indexOf(arr.find(t => t.outletId === thing.outletId)) === i;
+    });
+  }
+
+  uniqueOutletItemFilter(outletInfo){
+    var sameOutletItemList =  this.cartItem.cart.filter(function(item) {
+      return item.outletId == outletInfo.outletId;
+    });
+    return sameOutletItemList;
+  }
 }
 
 interface CARTSITEM {
@@ -84,6 +100,7 @@ interface CARTSITEM {
   subCategoryId : string,
   outletId : string,
   outletName : string,
+  outletRating : string,
   outletImage : string,
   itemId : string,
   itemName : string,

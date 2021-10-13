@@ -13,6 +13,7 @@ export class OutlethomePage implements OnInit {
   
   public userDetails = {id:"63",name:"Rajeev Ranjan Prakash",email:"rrpit9@gmail.com",mobile:"8804809613",password:"ab1e5cb87bca828b54a4a24c2b37ea8f",image:"",gender:"0",dob:null,otp:"123456",is_verified:"1",is_active:"1",is_deleted:"0"};
   public shopDetails = {id:"10",name:"Liquidity Outlet_2",image:"http://demo91.co.in/dev/liquidity/assets/upload/shops/1613808061_Outlet_Image_2.jpg",address:"Pushpanjali Chamber, Second Floor,Kolkata",city_id:"1",email:"outlettwo@liquidity.in",password:"e10adc3949ba59abbe56e057f20f883e",phone:"9999999999",rating:"0",review:"",offer_rate:"0",offer_text:"OFFERS Coming Soon !!!",house_rules:"Please Visit Terms and Condition Page www.liquiditybars.in",is_active:"1",is_deleted:"0"};
+  // public shopDetails = {id:"12",name:"Liquidity Outlet_4",image:"http://demo91.co.in/dev/liquidity/assets/upload/shops/1613810148_Outlet_Image_4.jpg",address:"Pushpanjali Chamber, Third Floor, Kolkata","city_id":"1","email":"outletfour@liquidity.in",password:"e10adc3949ba59abbe56e057f20f883e",phone:"9999999999",rating:"0",review:"",offer_rate:"0",offer_text:"OFFERS Coming Soon !!!",house_rules:"Please Visit Terms and Condition Page www.liquiditybars.in",is_active:"1",is_deleted:"0"}
   
   public cartItem: {cart: CARTSITEM[];};
   public currentSuperCategory = 'liquor';
@@ -123,6 +124,7 @@ export class OutlethomePage implements OnInit {
         subCategoryId : productInfo.sub_category_id,
         outletId : this.shopDetails.id,
         outletName : this.shopDetails.name,
+        outletRating : this.shopDetails.rating,
         outletImage : this.shopDetails.image,
         itemId : productInfo.id,
         itemName : productInfo.name,
@@ -184,6 +186,7 @@ interface CARTSITEM {
   subCategoryId : string,
   outletId : string,
   outletName : string,
+  outletRating : string,
   outletImage : string,
   itemId : string,
   itemName : string,
