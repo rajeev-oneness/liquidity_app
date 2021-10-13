@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiServiceService } from '../service/api-service.service';
-import * as CryptoJS from 'crypto-js';
 import { Router } from '@angular/router';
+import * as CryptoJS from 'crypto-js';
+import { ViewWillEnter } from '@ionic/angular';
 
 @Component({
   selector: 'app-outlethome',
@@ -22,8 +23,11 @@ export class OutlethomePage implements OnInit {
   }
 
   ngOnInit() {
-    this.existingCartCheck(); // checking the Existing cart
     this.changeSuperCategory('liquor'); // clicking the Liquor Section by default
+  }
+
+  ionViewWillEnter(){// for back coming to again this Page
+    this.existingCartCheck(); // checking the Existing cart
   }
 
   changeSuperCategory(categoryType){
