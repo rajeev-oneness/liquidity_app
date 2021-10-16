@@ -1,0 +1,60 @@
+.drink_items {
+	ion-item {
+		--background: #ffffff;
+	}
+}
+.select_form {
+	ion-item {
+		--background: #ffffff;
+		color: #000;
+		--min-height: 20px;
+		--inner-border-width: 0;
+		font-size: 14px;
+		--padding-start: 0;
+		
+		ion-label {
+			margin: 0;
+			font-size: 14px;
+		}
+
+		&.circle {
+			--border-radius: 20px;
+			--border-width: 2px;
+			--border-color: #dcc88d;
+			--inner-border-width: 0;
+			--padding-start: 10px;
+		}
+
+		ion-radio {
+			margin-right: 10px;
+
+			.radio-icon {
+				border-color: #000;
+
+				.radio-inner {
+					background: #dcc88d;
+				}
+			}
+			--color-checked: #dcc88d;
+		}
+
+		ion-avatar {
+			--border-radius: 0;
+			width: 16px;
+			height: 16px;
+			margin: 0 10px 0 0;
+		}
+
+		ion-input {
+			--padding-top: 3px;
+			--padding-bottom: 3px;
+		}
+	}
+}
+ion-footer {
+	.footer_content {
+		.footer_item_end {
+		    justify-content: center;
+		}
+	}
+}

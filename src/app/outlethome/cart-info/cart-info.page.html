@@ -11,7 +11,7 @@
   <div class="drink_items">
     <div *ngFor="let outletdata of uniqueOutletData">
       <div class="title_bar">
-        <h2 class="title">{{outletdata.outletName}} <span class="rating_outlet_incart">{{outletdata.outletRating}}</span></h2>
+        <h2 class="title">{{outletdata.outletName}} <span class="rating_outlet_incart">{{outletdata.outletRating}} &#9733;</span></h2>
       </div>
       <ion-list>
         <ion-item *ngFor="let cartInfo of uniqueOutletItemFilter(outletdata);let i = index">
@@ -21,7 +21,8 @@
                 <div class="drink_content">
                   <h3>{{cartInfo.itemName}}</h3>
                   <ul>
-                    <li>Price / unit: <span class="price_now d-block">₹ {{cartInfo.currentPrice | number : '.2-2'}}</span></li>
+                    <li>Price: <span class="price_now d-block">₹ {{cartInfo.currentPrice | number : '.2-2'}}</span></li>
+                    <li>{{cartInfo.subCategoryName}}</li>
                   </ul>
                 </div>
               </ion-col>
@@ -38,7 +39,7 @@
               </ion-col>
               <ion-col size="3">
                 <div class="drink_content drink_content--mod">
-                  <button (click)="removeProductItem(i,product)"><img src="assets/images/remove.png"></button>
+                  <button (click)="removeProductItem(i,cartInfo)"><img src="assets/images/remove.png"></button>
                 </div>
               </ion-col>
             </ion-row>
@@ -80,15 +81,14 @@
     </ion-item>
   </div>
 
-
-  <!-- <div class="title_bar">
+  <div class="title_bar">
     <h2 class="title">Using</h2>
   </div>
   <div class="select_form">
     <ion-grid>
-      <ion-radio-group value="booking" (ionChange)="radioGroupChange($event)">
+      <ion-radio-group [(ngModel)]="bookingForm.paymentFrom" (ionChange)="paymentOptionChange($event)">
         <ion-row>
-          <ion-col size="4" *ngIf="wallet_status=='2'">
+          <ion-col size="4">
             <ion-item>
               <ion-label>Wallet</ion-label>
               <ion-radio slot="start" value="wallet"></ion-radio>
@@ -105,15 +105,16 @@
     </ion-grid>
   </div>
 
-  <div *ngIf="wallet_status=='1'">
+  <!-- <div>
     <h4 class="note-text">Your Wallet balance is low.Please use online payment to complete the transactions</h4>
-  </div>
+  </div> -->
+
   <div class="title_bar">
     <h2 class="title">Booking for</h2>
   </div>
   <div class="select_form">
     <ion-grid>
-      <ion-radio-group value="booking"  (ionChange)="radioGroupMyself($event)">
+      <ion-radio-group [(ngModel)]="bookingForm.bookingFor" (ionChange)="bookingForOptionChange($event)">
         <ion-row>
           <ion-col size="4">
             <ion-item>
@@ -123,7 +124,7 @@
           </ion-col>
           <ion-col size="6">
             <ion-item>
-              <ion-label>Someone else</ion-label>
+              <ion-label>Someone Else</ion-label>
               <ion-radio slot="start" value="someoneelse"></ion-radio>
             </ion-item>
           </ion-col>
@@ -136,7 +137,7 @@
               <img src="assets/images/call.png">
             </ion-avatar>
             <ion-label>+91</ion-label>
-            <ion-input placeholder="mobile" [(ngModel)]="mobile"></ion-input>
+            <ion-input placeholder="mobile" [(ngModel)]="bookingForm.mobile" maxlength="10" (keypress)="isNumberKey($event)"></ion-input>
           </ion-item>
         </ion-col>
         <ion-col size="12">
@@ -144,7 +145,7 @@
             <ion-avatar slot="start">
               <img src="assets/images/e-mail.png">
             </ion-avatar>
-             <ion-input placeholder="youremail@email.com " [(ngModel)]="mail"></ion-input>
+             <ion-input placeholder="youremail@email.com" [(ngModel)]="bookingForm.email" [email]="true"></ion-input>
            </ion-item>
         </ion-col>
         <ion-col size="6">
@@ -152,7 +153,7 @@
             <ion-avatar slot="start">
               <img src="assets/images/calender.png">
             </ion-avatar>
-            <ion-datetime displayFormat="YYYY MMM DD " [(ngModel)]="date" max="{{scheduled_date}}" min="{{today_date}}"></ion-datetime>
+            <ion-datetime min="{{minDate}}" max="{{maxData}}" displayFormat="D MMM, YY" pickerFormat="YYYY MMM DD" [(ngModel)]="bookingForm.date"></ion-datetime>
            </ion-item>
         </ion-col>
         <ion-col size="6">
@@ -160,19 +161,19 @@
             <ion-avatar slot="start">
               <img src="assets/images/clock.png">
             </ion-avatar>
-            <ion-datetime displayFormat="hh-mm-A" [(ngModel)]="time" ></ion-datetime>
+            <ion-datetime displayFormat="hh:mm A" [(ngModel)]="bookingForm.time"></ion-datetime>
           </ion-item>
         </ion-col>
       </ion-row>
     </ion-grid>
-  </div> -->
+  </div>
 </ion-content>
 
 <ion-footer class="ion-no-border">
-<div class="footer_content">
-  <div class="footer_item_end mw_230" (click)="pay()">
-    <p>Select Payment Method</p>
-    <img src="assets/images/arrow-right.png">
+  <div class="footer_content">
+    <div class="footer_item_end mw_230" (click)="proceedToPay()">
+      <p>Select Payment Method</p>
+      <img src="assets/images/arrow-right.png">
+    </div>
   </div>
-</div>
 </ion-footer>

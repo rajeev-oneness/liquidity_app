@@ -1,6 +1,8 @@
 import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiServiceService } from 'src/app/service/api-service.service';
+import { getExactDate, validateEmail } from 'src/app/service/globalFuction';
+import { isNumberKey } from 'src/app/service/globalFuction';
 
 @Component({
   selector: 'app-cart-info',
@@ -8,16 +10,29 @@ import { ApiServiceService } from 'src/app/service/api-service.service';
   styleUrls: ['./cart-info.page.scss'],
 })
 export class CartInfoPage implements OnInit {
+  /********** From Global Function *********/
+  public isNumberKey = isNumberKey;
+  public getExactDate = getExactDate;
 
   public userDetails : any = {};
   public shopDetails : any = {};
-  
   public cartItem: {cart: CARTSITEM[];};
+
+  public minDate : string = getExactDate(0,0,1);
+  public maxData : string = getExactDate(1,0,0);
+  
+  public bookingForm = {
+    paymentFrom: 'online',bookingFor: 'myself',
+    mobile : '',email : '',
+    date : this.minDate,time : '10:00',
+  }
 
   constructor(private _apiService : ApiServiceService,private _router:Router)  {
     this.userDetails = JSON.parse(localStorage.getItem('userDetails'));
     this.shopDetails = JSON.parse(localStorage.getItem('shopDetails'));
     this.cartItem = {cart : []};
+    this.bookingForm.mobile = this.userDetails.mobile;
+    this.bookingForm.email = this.userDetails.email;
   }
 
   ngOnInit() {
@@ -46,8 +61,13 @@ export class CartInfoPage implements OnInit {
   increamentProductCounter(productInfo,categoryType){ // increament the Product
     let value = this.cartItem.cart.find(item => item.itemId === productInfo.itemId);
     if(value != undefined){
-      value.quantity = (parseInt(String(value.quantity)) + 1).toString();
-      value.calculatedPrice = String(parseFloat(value.currentPrice) * parseInt(value.quantity)); 
+      let nextQuantity = (parseInt(String(value.quantity)) + 1).toString();
+      if(parseInt(nextQuantity) > parseInt(value.maxQuantity)){
+        console.log('You can not add more than '+ value.quantity +' quantity');
+      }else{
+        value.quantity = nextQuantity;
+        value.calculatedPrice = String(parseFloat(value.currentPrice) * parseInt(value.quantity));
+      }
     }
     this.updateCartItemToLocalStorage(); // updating the Cart in to LocalStorage
     // console.log(this.cartItem.cart);
@@ -62,13 +82,15 @@ export class CartInfoPage implements OnInit {
     console.log('Existing Cart Info',this.cartItem.cart);
   }
 
-  totalCartValue = '0'; // Total Cart Value
+  public totalCartValue = '0'; // Total Cart Value
   checkCurrentCartValue(){
     this.totalCartValue = this.cartItem.cart.reduce((accumulator:any, current:any) => parseFloat(accumulator) + parseFloat(current.calculatedPrice), 0);
   }
 
-  removeProductItem(index){
-    this.cartItem.cart.splice(index, 1);
+  removeProductItem(index,cartInfo){
+    this.cartItem.cart.forEach((element,index)=>{
+      if(element.itemId == cartInfo.itemId){this.cartItem.cart.splice(index,1);}
+    });
     this.updateCartItemToLocalStorage();
   }
 
@@ -92,12 +114,39 @@ export class CartInfoPage implements OnInit {
     });
     return sameOutletItemList;
   }
+
+  /************************** Booking Start ************************/
+  paymentOptionChange(event){
+    console.log(event.detail.value);
+  }
+
+  bookingForOptionChange(event){
+    let radioName = event.detail.value;
+    let mobile = '',email = '';
+    if(radioName == 'myself'){
+      mobile = this.userDetails.mobile;
+      email = this.userDetails.email;
+    }
+    this.bookingForm.mobile = mobile;
+    this.bookingForm.email = email;
+  }
+  
+  /************************** Proceed to Pay *****************************/
+  proceedToPay(){
+    if(this.bookingForm.mobile == '' || this.bookingForm.mobile.length != 10){
+      console.log('mobile number must be 10 digits');
+    }else if(this.bookingForm.email == '' || !validateEmail(this.bookingForm.email)){
+      console.log('invalid email address given');
+    }
+    console.log(this.bookingForm);
+  }
 }
 
 interface CARTSITEM {
   categoryType : string, // liquor, food, combo, soft-beverage
   categoryId : string,
   subCategoryId : string,
+  subCategoryName : string,
   outletId : string,
   outletName : string,
   outletRating : string,
@@ -108,6 +157,7 @@ interface CARTSITEM {
   lowPrice : string,
   currentPrice : string,
   quantity : string,
+  maxQuantity : string,
   calculatedPrice : any,
   description : string,
 }

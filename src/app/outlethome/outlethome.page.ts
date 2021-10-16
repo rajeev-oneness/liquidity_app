@@ -118,10 +118,15 @@ export class OutlethomePage implements OnInit {
   increamentProductCounter(productInfo,categoryType){ // increament the Product
     let value = this.cartItem.cart.find(item => item.itemId === productInfo.id);
     if(value == undefined){
+      let subCategoryName = '';
+      if(categoryType == 'liquor'){
+        subCategoryName = this.currentLiquorInfo;
+      }
       this.cartItem.cart.push({
         categoryType : categoryType,
         categoryId : productInfo.category_id,
         subCategoryId : productInfo.sub_category_id,
+        subCategoryName : subCategoryName,
         outletId : this.shopDetails.id,
         outletName : this.shopDetails.name,
         outletRating : this.shopDetails.rating,
@@ -132,12 +137,18 @@ export class OutlethomePage implements OnInit {
         lowPrice : productInfo.lowest_price,
         currentPrice : productInfo.current_price,
         quantity : '1',
+        maxQuantity : '5',
         calculatedPrice : productInfo.current_price,
         description : productInfo.description,
       });
     }else{
-      value.quantity = (parseInt(String(value.quantity)) + 1).toString();
-      value.calculatedPrice = String(parseFloat(value.currentPrice) * parseInt(value.quantity));
+      let nextQuantity = (parseInt(String(value.quantity)) + 1).toString();
+      if(parseInt(nextQuantity) > parseInt(value.maxQuantity)){
+        console.log('You can not add more than '+ value.quantity +' quantity');
+      }else{
+        value.quantity = nextQuantity;
+        value.calculatedPrice = String(parseFloat(value.currentPrice) * parseInt(value.quantity));
+      }
     }
     this.updateCartItemToLocalStorage(); // updating the Cart in to LocalStorage
     // console.log(this.cartItem.cart);
@@ -158,7 +169,11 @@ export class OutlethomePage implements OnInit {
     this.updateCartItemToLocalStorage();
     localStorage.setItem('userDetails',JSON.stringify(this.userDetails));
     localStorage.setItem('shopDetails',JSON.stringify(this.shopDetails));
-    this._router.navigate(['outlethome/cart-info']);
+    if(this.cartItem.cart.length > 0){
+      this._router.navigate(['outlethome/cart-info']);
+    }else{
+      console.log('You donot have item in your cart');
+    }
     // Encrypting and Dcrypting the Cart Info
     // var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(this.cartItem.cart), 'secret key 123').toString();
     // console.log(ciphertext);
@@ -184,6 +199,7 @@ interface CARTSITEM {
   categoryType : string, // liquor, food, combo, soft-beverage
   categoryId : string,
   subCategoryId : string,
+  subCategoryName : string,
   outletId : string,
   outletName : string,
   outletRating : string,
@@ -194,6 +210,7 @@ interface CARTSITEM {
   lowPrice : string,
   currentPrice : string,
   quantity : string,
+  maxQuantity : string,
   calculatedPrice : any,
   description : string,
 }
