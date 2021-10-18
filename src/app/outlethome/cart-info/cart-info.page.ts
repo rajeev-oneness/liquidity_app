@@ -17,6 +17,7 @@ export class CartInfoPage implements OnInit {
   public userDetails : any = {};
   public shopDetails : any = {};
   public cartItem: {cart: CARTSITEM[];};
+  public deviceId : any = '';
 
   public minDate : string = getExactDate(0,0,1);
   public maxData : string = getExactDate(1,0,0);
@@ -30,50 +31,52 @@ export class CartInfoPage implements OnInit {
   constructor(private _apiService : ApiServiceService,private _router:Router)  {
     this.userDetails = JSON.parse(localStorage.getItem('userDetails'));
     this.shopDetails = JSON.parse(localStorage.getItem('shopDetails'));
+    this.deviceId = JSON.parse(localStorage.getItem('userDeviceInfo'));
     this.cartItem = {cart : []};
     this.bookingForm.mobile = this.userDetails.mobile;
     this.bookingForm.email = this.userDetails.email;
   }
 
   ngOnInit() {
-    this.existingCartCheck(); // checking the Existing cart
+    this.existingCartCheckFromLocalStorage(); // checking the Existing cart
     this.uniqueOutletDataFunction(); // Unique Outlet id Function
   }
 
   decreamentProductCounter(productInfo,categoryType){ // decareament the product
-    let value = this.cartItem.cart.find(item => item.itemId === productInfo.itemId);
-    if(value == undefined){}
+    var itemInfo = this.cartItem.cart.find(item => item.itemId === productInfo.itemId);
+    if(itemInfo == undefined){}
     else{
-      let currentQuantity = (parseInt(String(value.quantity)) - 1).toString();
+      let currentQuantity = (parseInt(String(itemInfo.quantity)) - 1).toString();
       // console.log('currentQuantity => '+currentQuantity);
       if(currentQuantity > '0'){
-        value.quantity = (parseInt(String(value.quantity)) - 1).toString();
-        value.calculatedPrice = String(parseFloat(value.currentPrice) * parseInt(value.quantity));
+        itemInfo.quantity = (parseInt(String(itemInfo.quantity)) - 1).toString();
+        itemInfo.calculatedPrice = String(parseFloat(itemInfo.currentPrice) * parseInt(itemInfo.quantity));
       }else if(currentQuantity <= '0'){
-        value.quantity = '0';value.calculatedPrice = '0';
+        itemInfo.quantity = '0';itemInfo.calculatedPrice = '0';
         this.cartItem.cart = this.cartItem.cart.filter(item => item.itemId !== productInfo.itemId); // removing the item from cart
         // console.log('Now Cart',this.cartItem.cart);
       }
+      this.updateCartItemToLocalStorage(); // updating the Cart in to LocalStorage
+      this.addItemToCartToServer(itemInfo,categoryType); // updating the cart into Server
     }
-    this.updateCartItemToLocalStorage(); // updating the Cart in to LocalStorage
   }
 
   increamentProductCounter(productInfo,categoryType){ // increament the Product
-    let value = this.cartItem.cart.find(item => item.itemId === productInfo.itemId);
-    if(value != undefined){
-      let nextQuantity = (parseInt(String(value.quantity)) + 1).toString();
-      if(parseInt(nextQuantity) > parseInt(value.maxQuantity)){
-        console.log('You can not add more than '+ value.quantity +' quantity');
+    let itemInfo = this.cartItem.cart.find(item => item.itemId === productInfo.itemId);
+    if(itemInfo != undefined){
+      let nextQuantity = (parseInt(String(itemInfo.quantity)) + 1).toString();
+      if(parseInt(nextQuantity) > parseInt(itemInfo.maxQuantity)){
+        console.log('You can not add more than '+ itemInfo.quantity +' quantity');
       }else{
-        value.quantity = nextQuantity;
-        value.calculatedPrice = String(parseFloat(value.currentPrice) * parseInt(value.quantity));
+        itemInfo.quantity = nextQuantity;
+        itemInfo.calculatedPrice = String(parseFloat(itemInfo.currentPrice) * parseInt(itemInfo.quantity));
       }
+      this.updateCartItemToLocalStorage(); // updating the Cart in to LocalStorage
+      this.addItemToCartToServer(itemInfo,categoryType); // updating the cart into Server
     }
-    this.updateCartItemToLocalStorage(); // updating the Cart in to LocalStorage
-    // console.log(this.cartItem.cart);
   }
 
-  existingCartCheck(){
+  existingCartCheckFromLocalStorage(){
     let existingCart = JSON.parse(localStorage.getItem('allCartItems'));
     if(existingCart != null){
       this.cartItem.cart = existingCart;
@@ -92,6 +95,27 @@ export class CartInfoPage implements OnInit {
       if(element.itemId == cartInfo.itemId){this.cartItem.cart.splice(index,1);}
     });
     this.updateCartItemToLocalStorage();
+  }
+
+  addItemToCartToServer(itemDetails,categoryType){ // updating the Cart in to Server
+    var isLiquor = '0';
+    if(categoryType == 'liquor'){
+      isLiquor = '1';
+    }
+    const mainForm = new FormData();
+    mainForm.append('device_id',this.deviceId);
+    mainForm.append('product_id',itemDetails.itemId);
+    mainForm.append('product_name',itemDetails.itemName);
+    mainForm.append('price',itemDetails.currentPrice);
+    mainForm.append('quantity',itemDetails.quantity);
+    mainForm.append('is_liquor',isLiquor);
+    this._apiService.saveOrUpdateItemsToUserCart(mainForm).subscribe(
+      res => {
+        console.log(res);
+      },err => {
+        console.log(err);
+      },
+    )
   }
 
   updateCartItemToLocalStorage(){ // updating the Cart in to LocalStorage

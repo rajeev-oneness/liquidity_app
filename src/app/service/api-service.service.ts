@@ -30,4 +30,8 @@ export class ApiServiceService {
   getOtherAllProductInfo(categoryId,shopId){
     return this._http.get<any>(_apiUrl + 'fetchOtherProductsByCategory/'+categoryId+'/'+shopId,{headers: this.header});
   }
+
+  saveOrUpdateItemsToUserCart(itemInfo){
+    return this._http.post<any>(_apiUrl + 'addToCart',itemInfo,{headers: this.header});
+  }
 }
