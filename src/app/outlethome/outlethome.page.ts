@@ -23,9 +23,8 @@ export class OutlethomePage implements OnInit {
 
   constructor(private _apiService : ApiServiceService,private _router:Router) {
     this.cartItem = {cart : []};
-      // getting Unique Device Id
-      this.deviceId = 'deviceIdIonicUser'+this.userDetails.id;
-      console.log('Device Id :=> '+this.deviceId);
+    // generating unique  Device Id
+    this.deviceId = 'deviceIdIonicUser'+this.userDetails.id;
   }
 
   ngOnInit() {

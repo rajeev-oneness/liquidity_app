@@ -38,8 +38,9 @@ export class CartInfoPage implements OnInit {
   }
 
   ngOnInit() {
-    this.existingCartCheckFromLocalStorage(); // checking the Existing cart
+    this.existingCartCheckFromLocalStorage(); // checking the Existing cart on LocalStorage
     this.uniqueOutletDataFunction(); // Unique Outlet id Function
+    // this.existingUserCartFromServer(); // checking the Existing cart on Server
   }
 
   decreamentProductCounter(productInfo,categoryType){ // decareament the product
@@ -76,13 +77,25 @@ export class CartInfoPage implements OnInit {
     }
   }
 
+  existingUserCartFromServer(){ // Getting the Existing cart on Server for this particular Device id
+    const deviceIdForm = new FormData();
+    deviceIdForm.append('device_id',this.deviceId);
+    this._apiService.getUserDeviceCartInfo(deviceIdForm).subscribe(
+      res => {
+        console.log('User Cart Info',res);
+      },err => {
+        console.log(err);
+      }
+    )
+  }
+
   existingCartCheckFromLocalStorage(){
     let existingCart = JSON.parse(localStorage.getItem('allCartItems'));
     if(existingCart != null){
       this.cartItem.cart = existingCart;
       this.checkCurrentCartValue(); // Cheking the Current Cart Value
     }
-    console.log('Existing Cart Info',this.cartItem.cart);
+    // console.log('Existing Cart Info',this.cartItem.cart);
   }
 
   public totalCartValue = '0'; // Total Cart Value

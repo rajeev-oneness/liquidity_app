@@ -34,4 +34,8 @@ export class ApiServiceService {
   saveOrUpdateItemsToUserCart(itemInfo){
     return this._http.post<any>(_apiUrl + 'addToCart',itemInfo,{headers: this.header});
   }
+
+  getUserDeviceCartInfo(deviceIdForm){
+    return this._http.post<any>(_apiUrl + 'getCartDetails',deviceIdForm,{headers: this.header});
+  }
 }
