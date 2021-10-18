@@ -92,7 +92,11 @@ export class CartInfoPage implements OnInit {
 
   removeProductItem(index,cartInfo){
     this.cartItem.cart.forEach((element,index)=>{
-      if(element.itemId == cartInfo.itemId){this.cartItem.cart.splice(index,1);}
+      if(element.itemId == cartInfo.itemId){
+        element.quantity = '0'; // setting the Quantity to be Zero
+        this.addItemToCartToServer(element,cartInfo.categoryType); // updating the cart into Server
+        this.cartItem.cart.splice(index,1);
+      }
     });
     this.updateCartItemToLocalStorage();
   }
