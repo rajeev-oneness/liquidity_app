@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiServiceService } from '../service/api-service.service';
 import { Router } from '@angular/router';
-import * as CryptoJS from 'crypto-js';
-import { ViewWillEnter } from '@ionic/angular';
 
 @Component({
   selector: 'app-outlethome',
@@ -56,10 +54,7 @@ export class OutlethomePage implements OnInit {
           this.liquorSubCategoryInfo = res.sub_categories;
           this.getLiquorProductInfo(this.liquorSubCategoryInfo[0]); // Getting the First Liquor prduct Info
         }
-        // console.log('getLiquorSubCategoryInfo',res);
-      },err => {
-        // console.log('getLiquorSubCategoryInfo',err);
-      }
+      },err => {}
     )
   }
   
@@ -71,17 +66,13 @@ export class OutlethomePage implements OnInit {
         if(res.status == 1 || res.status == '1'){
           this.liquorProductInfo = res.products;
         }
-        // console.log('getLiquorProductInfo',res);
-      },err => {
-        // console.log('getLiquorProductInfo',err);
-      }
+      },err => {}
     )
   }
 
   public foodProductInfo : any = [];
   public softBeverageProductInfo : any = [];
   public comboProductInfo : any = [];
-
   getOtherAllProductInfo(categoryId,categoryType){
     this._apiService.getOtherAllProductInfo(categoryId,this.shopDetails.id).subscribe(
       res => {
@@ -94,10 +85,7 @@ export class OutlethomePage implements OnInit {
             this.comboProductInfo = res.products;
           }
         }
-        // console.log('getOtherAllProductInfo',res,categoryType);
-      },err => {
-        // console.log('getOtherAllProductInfo',err);
-      }
+      },err => {}
     )
   }
 
@@ -126,22 +114,14 @@ export class OutlethomePage implements OnInit {
         subCategoryName = this.currentLiquorInfo;
       }
       itemInfo = {
-        categoryType : categoryType,
-        categoryId : productInfo.category_id,
-        subCategoryId : productInfo.sub_category_id,
-        subCategoryName : subCategoryName,
-        outletId : this.shopDetails.id,
-        outletName : this.shopDetails.name,
-        outletRating : this.shopDetails.rating,
-        outletImage : this.shopDetails.image,
-        itemId : productInfo.id,
-        itemName : productInfo.name,
-        highPrice : productInfo.highest_price,
-        lowPrice : productInfo.lowest_price,
-        currentPrice : productInfo.current_price,
-        quantity : '1',
-        maxQuantity : '5',
-        calculatedPrice : productInfo.current_price,
+        categoryType : categoryType,categoryId : productInfo.category_id,
+        subCategoryId : productInfo.sub_category_id,subCategoryName : subCategoryName,
+        outletId : this.shopDetails.id,outletName : this.shopDetails.name,
+        outletRating : this.shopDetails.rating,outletImage : this.shopDetails.image,
+        itemId : productInfo.id,itemName : productInfo.name,
+        highPrice : productInfo.highest_price,lowPrice : productInfo.lowest_price,
+        currentPrice : productInfo.current_price,quantity : '1',
+        maxQuantity : '5',calculatedPrice : productInfo.current_price,
         description : productInfo.description,
       }
       this.cartItem.cart.push(itemInfo);
@@ -179,15 +159,8 @@ export class OutlethomePage implements OnInit {
     }else{
       console.log('You donot have item in your cart');
     }
-    // Encrypting and Dcrypting the Cart Info
-    // var ciphertext = CryptoJS.AES.encrypt(JSON.stringify(this.cartItem.cart), 'secret key 123').toString();
-    // console.log(ciphertext);
-    // var bytes  = CryptoJS.AES.decrypt(ciphertext, 'secret key 123');
-    // var decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-    // console.log(decryptedData);
   }
 
-  
   addItemToCartToServer(itemDetails,categoryType){ // updating the Cart in to Server
     var isLiquor = '0';
     if(categoryType == 'liquor'){
@@ -224,20 +197,11 @@ export class OutlethomePage implements OnInit {
 
 interface CARTSITEM {
   categoryType : string, // liquor, food, combo, soft-beverage
-  categoryId : string,
-  subCategoryId : string,
-  subCategoryName : string,
-  outletId : string,
-  outletName : string,
-  outletRating : string,
-  outletImage : string,
-  itemId : string,
-  itemName : string,
-  highPrice : string,
-  lowPrice : string,
-  currentPrice : string,
-  quantity : string,
-  maxQuantity : string,
-  calculatedPrice : any,
-  description : string,
+  categoryId : string,subCategoryId : string,
+  subCategoryName : string,outletId : string,
+  outletName : string,outletRating : string,
+  outletImage : string,itemId : string,itemName : string,
+  highPrice : string,lowPrice : string,
+  currentPrice : string,quantity : string,maxQuantity : string,
+  calculatedPrice : any,description : string,
 }

@@ -48,14 +48,12 @@ export class CartInfoPage implements OnInit {
     if(itemInfo == undefined){}
     else{
       let currentQuantity = (parseInt(String(itemInfo.quantity)) - 1).toString();
-      // console.log('currentQuantity => '+currentQuantity);
       if(currentQuantity > '0'){
         itemInfo.quantity = (parseInt(String(itemInfo.quantity)) - 1).toString();
         itemInfo.calculatedPrice = String(parseFloat(itemInfo.currentPrice) * parseInt(itemInfo.quantity));
       }else if(currentQuantity <= '0'){
         itemInfo.quantity = '0';itemInfo.calculatedPrice = '0';
         this.cartItem.cart = this.cartItem.cart.filter(item => item.itemId !== productInfo.itemId); // removing the item from cart
-        // console.log('Now Cart',this.cartItem.cart);
       }
       this.updateCartItemToLocalStorage(); // updating the Cart in to LocalStorage
       this.addItemToCartToServer(itemInfo,categoryType); // updating the cart into Server
@@ -127,11 +125,8 @@ export class CartInfoPage implements OnInit {
     mainForm.append('quantity',itemDetails.quantity);
     mainForm.append('is_liquor',isLiquor);
     this._apiService.saveOrUpdateItemsToUserCart(mainForm).subscribe(
-      res => {
-        console.log(res);
-      },err => {
-        console.log(err);
-      },
+      res => {console.log(res);},
+      err => {console.log(err);}
     )
   }
 
@@ -185,20 +180,11 @@ export class CartInfoPage implements OnInit {
 
 interface CARTSITEM {
   categoryType : string, // liquor, food, combo, soft-beverage
-  categoryId : string,
-  subCategoryId : string,
-  subCategoryName : string,
-  outletId : string,
-  outletName : string,
-  outletRating : string,
-  outletImage : string,
-  itemId : string,
-  itemName : string,
-  highPrice : string,
-  lowPrice : string,
-  currentPrice : string,
-  quantity : string,
-  maxQuantity : string,
-  calculatedPrice : any,
-  description : string,
+  categoryId : string,subCategoryId : string,
+  subCategoryName : string,outletId : string,
+  outletName : string,outletRating : string,
+  outletImage : string,itemId : string,itemName : string,
+  highPrice : string,lowPrice : string,
+  currentPrice : string,quantity : string,maxQuantity : string,
+  calculatedPrice : any,description : string,
 }
